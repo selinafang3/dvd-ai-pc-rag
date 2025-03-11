@@ -223,7 +223,9 @@ export function Assistant() {
         console.debug(STATUS_READINESS, res)
         // check if res is an object and every value in res is truthy
         if (typeof res === 'object') {
-          setIsReady(Object.values(res).every(value => Boolean(value))) || ((res['embedReady'] || !useRAG) && res['genaiReady'] && (res['ingestReady'] ?? true))
+          const isReady = Object.values(res).every(value => Boolean(value)) ||
+            ((res['embedReady'] || !useRAG) && res['genaiReady'] && (res['ingestReady'] ?? true));
+          setIsReady(isReady);
         }
       })
 
@@ -244,7 +246,7 @@ export function Assistant() {
                 ds.set(newDataset, [])
               }
               if (ds.get(oldDataset)?.length === 0) {
-                delete ds[oldDataset]
+                ds.delete(oldDataset)
               }
               const exportDs = Object.fromEntries(ds)
               console.log("Updating dataset with name", newDataset, JSON.stringify(exportDs))
@@ -307,7 +309,8 @@ export function Assistant() {
 
     let source_list = []
     for (const source of sources) {
-      source_list.push(`https://wikipedia.org/wiki/${source.replace(/ /g, '_')}`)
+      const sourceStr = source as string; // Explicitly cast source to string
+      source_list.push(`https://wikipedia.org/wiki/${sourceStr.replace(/ /g, '_')}`);
     }
     console.log(`RAG sources:\n${source_list.join('\n')}`)
   }, [])
