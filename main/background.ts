@@ -13,7 +13,7 @@
 */
 
 import path from 'path'
-import { app, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
 import { fork } from 'child_process';
@@ -72,6 +72,15 @@ if (isProd) {
 
   await app.whenReady()
 
+  // Custom error handling function
+  function handleUncaughtErrors(error: any) {
+    console.error('Uncaught error:', error);
+  }
+
+  // Global error handling
+  process.on('uncaughtException', handleUncaughtErrors);
+  process.on('unhandledRejection', handleUncaughtErrors);
+  
   mainWindow = createWindow('main', {
     width: 1920,
     height: 1080,
@@ -79,6 +88,7 @@ if (isProd) {
     title: "Dell Validated Design for AI PC - RAG",
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
     },
   })
 

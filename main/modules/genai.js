@@ -11,7 +11,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 */
-
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1); // optional: exit the process
+  });
+  
 const { assert } = require('console');
 
 require('dotenv').config()
@@ -29,18 +33,22 @@ let cwdDev = "";
 let device = "CPU";
 let exe;
 
+console.log('Current working directory:', process.cwd());
+
 if (intel) {
     model = process.env['INTEL_LLM'] ?? defaultModel;
     model_path = process.env['INTEL_LLM_PATH'];
     device = process.env['INTEL_USE_GPU'] === 'true' ? 'GPU' : 'NPU';
     cwdDev = 'openvino_genai_chat';
     exe = 'openvino_genai_chat.exe';
+    console.log("Intel processor detected. Model:", model, "Path:", model_path, "Device:", device);
 } else if (qualcomm) {
     model = process.env['QUALCOMM_LLM'] ?? defaultModel;
     model_path = process.env['QUALCOMM_LLM_PATH'];
     device = 'NPU';
     cwdDev = 'qnn_genai_chat';
     exe = 'ChatApp.exe';
+    console.log("Qualcomm processor detected. Model:", model, "Path:", model_path, "Device:", device);
 } else {
     console.error(`Unknown platform ${process.env['PROCESSOR_IDENTIFIER']}`);
     return
@@ -59,6 +67,8 @@ process.on('message', (result) => {
         if (!running) {
             console.log("received start genai, spawning chat process..", result);
             process.send(`STATE: Initializing language model ${model}`);
+            // Ensure device is set correctly based on processor type
+            const deviceToUse = result?.device ?? (qualcomm ? 'NPU' : device);
 
             genai_process = spawn(exe,
                 [
@@ -66,7 +76,7 @@ process.on('message', (result) => {
                     result?.device ?? "CPU", // device
                     result?.max_tokens ?? "200" // max tokens
                 ], { cwd: result?.dev ? cwdDev : cwdProd });
-
+            console.log("GenAI process spawned with command:", exe, '../' + model_path, deviceToUse, result?.max_tokens ?? "200");
             running = true;
 
             genai_process.stdout.on('data', function (data) {
@@ -90,6 +100,14 @@ process.on('message', (result) => {
                     console.error(JSON.stringify({ tree: 'err', error: e, data }));
                 }
             })
+            genai_process.on('exit', function (code, signal) {
+               console.log('GenAI process exited with code:', code, 'and signal:', signal);
+               if (code !== 0) {
+                 console.error('GenAI process failed. Exit code:', code);
+                 process.send({ event: 'modelFailed', code });
+                 process.send({ event: 'genaiReady', status: false }); 
+               }
+             });
 
             if (result?.prompt) {
                 console.log("Sending prompt:\n", result?.prompt.replace(/\n/g, '\r') + '\n');
