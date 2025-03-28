@@ -61,7 +61,7 @@ Please follow the following steps to configure QNN SDKs for ChatApp:
 
 Make sure `QNN_SDK_ROOT` is set globally pointing to QNN SDK before you build the project.
 
-1. Open `ChatApp.sln`
+1. Open `ChatApp.vcxproj`
 2. Build project in Visual Studio
 
 ## Running App
@@ -70,25 +70,25 @@ Make sure `QNN_SDK_ROOT` is set globally pointing to QNN SDK before you build th
 
 ### Running via Visual Studio
 
-Click on the green play button to build and run.
+1. Set the command argument to point to the genie_bundle directory : Go to Debug > ChatApp Debug Properties > under Configuration Properties > Advanced > Replace the entire Command Arguments section with the path to genie_bundle directory.
+2. Click on the green play button to build and run.
 
 Visual studio project is configured with the following command arguments:
 
 ```powershell
-.\ARM64\Debug\ChatApp.exe --genie-config .\\genie_bundle\\genie_config.json --base-dir .\\genie_bundle\\
+.\ARM64\Debug\ChatApp.exe <MODEL_DIR>
 ```
 
 ### Running app via CLI
 
 ```powershell
 cd {Project directory}
-.\ARM64\Debug\ChatApp.exe --genie-config .\\genie_bundle\\genie_config.json --base-dir .\\genie_bundle\\
+.\ARM64\Debug\ChatApp.exe <MODEL_DIR>
 ```
 
-Run `--help` to learn more:
-
+To see usage:
 ```powershell
-.\ARM64\Debug\ChatApp.exe --help
+.\ARM64\Debug\ChatApp.exe
 ```
 
 Make sure to provide paths to local config file and models using `\\` or `/` as a path separator and not `\`
@@ -97,17 +97,19 @@ Make sure to provide paths to local config file and models using `\\` or `/` as 
 #### Correct file path examples
 
 ```powershell
-1. C:\\Path\\To\\Model\\Config\\llama2_7b.json
-2. C:/Path/To/Model/Config/llama2_7b.json
+1. C:\\Path\\To\\Model\\genie_bundle
+2. C:/Path/To/Model/genie_bundle
 ```
 
 #### Incorrect file path example
 
 ```powershell
-1. C:\Path\To\Model\Config\llama2_7b.json
+1. C:\Path\To\Model\genie_bundle
 ```
 
 
 ### Sample Output
 
-![sample_output](assets/images/sample_output.png)
+![sample-output](https://github.com/user-attachments/assets/0633b492-e052-41e5-acbe-a09698b32001)
+
+![sample-output2](https://github.com/user-attachments/assets/57c01f04-7dad-44fa-9585-fd3795b63521)

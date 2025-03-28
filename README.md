@@ -173,8 +173,8 @@ Using [this guide](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cp
         cp $env:OpenVINO_DIR\..\3rdparty\tbb\bin\tbb*.dll openvino_genai_chat\
         ```
 1. Qualcomm-specific build steps:
-    1. Open and build the `cpp\qnn_genai_chat\ChatApp.sln` (modified from the Qualcomm AI Hub Chat App sample [here](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cpp/ChatApp#build-app).
-    1. Copy the ChatApp.exe 
+    1. Open and build the cpp\qnn_genai_chat\ChatApp.vcxproj in Visual Studio in Release/Arm64 mode. (modified from the Qualcomm AI Hub Chat App sample [here](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cpp/ChatApp#build-app)).
+    1. A directory called qnn_genai_chat with the ChatApp.exe will be created in the main folder.
     
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -217,7 +217,7 @@ Most AI Models must be transformed for use on AI PC NPU silicon. These transform
     yarn dev
     ```
 
-1. For initial use, load the initial sample vector store built from the Wikipedia page `2024 NBA Cup` and its linked pages by navigating to the upper left dropdown menu, selecting `Add new dataset`, entering `2024 NBA Cup` in the text box that appears to the right of the dropdown, and pressing the `Enter` key to start ingestion.
+1. For initial use, load the initial sample vector store built from the Wikipedia page `2024 NBA Cup` and its linked pages by navigating to the upper left dropdown menu, selecting `Add new dataset`, entering `2024 NBA Cup` in the text box that appears to the right of the dropdown, and pressing the `Enter` key to start ingestion. Initial ingestion will take ~4 hours.
 
     1. <strong>Note</strong> - this integration with Wikipedia as a data source is built for <strong>evaluation usage only</strong>. Please refer to [MediaWiki API Etiquette guidelines](https://www.mediawiki.org/wiki/API:Etiquette) for broader usage.
 
